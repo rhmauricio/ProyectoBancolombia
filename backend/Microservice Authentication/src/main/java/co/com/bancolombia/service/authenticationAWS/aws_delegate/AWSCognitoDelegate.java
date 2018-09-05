@@ -3,7 +3,6 @@ package co.com.bancolombia.service.authenticationAWS.aws_delegate;
 
 import co.com.bancolombia.service.authenticationAWS.model.UserParameters;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProvider;
-import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProviderClient;
 import com.amazonaws.services.cognitoidp.AWSCognitoIdentityProviderClientBuilder;
 import com.amazonaws.services.cognitoidp.model.*;
 
@@ -40,8 +39,7 @@ public class AWSCognitoDelegate {
                                 .withValue(userParameters.getFirstName()),
                         new AttributeType()
                                 .withName("phone_number")
-                                .withValue(userParameters.getPhoneNumber())
-                )
+                                .withValue(userParameters.getPhoneNumber()))
                 .withDesiredDeliveryMediums(DeliveryMediumType.EMAIL)
                 .withForceAliasCreation(false);
 
