@@ -1,8 +1,10 @@
 package co.com.bancolombia.service.authenticationAWS.api;
 
-import co.com.bancolombia.service.authenticationAWS.model.AuthenticationLoginResponse;
-import co.com.bancolombia.service.authenticationAWS.model.JsonApiBodyResponseErrors;
-import co.com.bancolombia.service.authenticationAWS.model.LoginRequest;
+import co.com.bancolombia.service.authenticationAWS.aws_delegate.AWSCognitoDelegate;
+import co.com.bancolombia.service.authenticationAWS.model.*;
+import com.amazonaws.services.cognitoidp.model.AWSCognitoIdentityProviderException;
+import com.amazonaws.services.cognitoidp.model.UserNotConfirmedException;
+import com.amazonaws.services.cognitoidp.model.UserNotFoundException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -21,6 +23,7 @@ import javax.validation.constraints.*;
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-09-04T21:59:31.662-05:00")
 
@@ -31,22 +34,62 @@ public class LoginApiController implements LoginApi {
 
     private final ObjectMapper objectMapper;
 
+    private AWSCognitoDelegate cognitoDelegate;
+
     private final HttpServletRequest request;
 
     @org.springframework.beans.factory.annotation.Autowired
     public LoginApiController(ObjectMapper objectMapper, HttpServletRequest request) {
         this.objectMapper = objectMapper;
         this.request = request;
+        this.cognitoDelegate = new AWSCognitoDelegate();
     }
 
-    public ResponseEntity<AuthenticationLoginResponse> loginPost(@ApiParam(value = "body" ,required=true )  @Valid @RequestBody LoginRequest body) {
-        String accept = request.getHeader("Accept");
+    public ResponseEntity<?> loginPost(@ApiParam(value = "body" ,required=true )  @Valid @RequestBody LoginRequest body) {
+        String accept = request.getHeader("Content-Type");
         if (accept != null && accept.contains("application/json")) {
             try {
-                return new ResponseEntity<AuthenticationLoginResponse>(objectMapper.readValue("{  \"data\" : {    \"tokenId\" : \"tokenId\",    \"success\" : true  }}", AuthenticationLoginResponse.class), HttpStatus.NOT_IMPLEMENTED);
-            } catch (IOException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<AuthenticationLoginResponse>(HttpStatus.INTERNAL_SERVER_ERROR);
+                Credentials userCredentials = body.getCredentials();
+
+                cognitoDelegate.authenticateUser(userCredentials.getUser(), userCredentials.getPassword());
+            } catch (AWSCognitoIdentityProviderException e) {
+                if (e instanceof UserNotConfirmedException) {
+                    log.error("Error al iniciar sesión: el usuario no está verificado", e);
+
+                    JsonApiBodyResponseErrors responseError = new JsonApiBodyResponseErrors();
+                    List<ErrorDetail> errorsResponse =  new ArrayList<>();
+                    ErrorDetail errorDetail = new ErrorDetail();
+
+                    errorDetail.setCode("0001");
+                    errorDetail.setDetail("El usuario que intenta loguearse no ha ingresado el código de verificación");
+                    errorDetail.setId(body.getHeader().getId());
+                    errorDetail.setSource("/login");
+                    errorDetail.setStatus(HttpStatus.CONFLICT.toString());
+                    errorDetail.setTitle("Usuario no verificado");
+
+                    errorsResponse.add(errorDetail);
+                    responseError.setErrors(errorsResponse);
+                    return new ResponseEntity<JsonApiBodyResponseErrors>(responseError, HttpStatus.CONFLICT);
+                }
+
+                if (e instanceof UserNotFoundException) {
+                    log.error("Usuario no existe: el username dado no existe en la DB", e);
+
+                    JsonApiBodyResponseErrors responseError = new JsonApiBodyResponseErrors();
+                    List<ErrorDetail> errorsResponse =  new ArrayList<>();
+                    ErrorDetail errorDetail = new ErrorDetail();
+
+                    errorDetail.setCode("0002");
+                    errorDetail.setDetail("El usuario o la contraseña son incorrectos");
+                    errorDetail.setId(body.getHeader().getId());
+                    errorDetail.setSource("/login");
+                    errorDetail.setStatus(HttpStatus.UNAUTHORIZED.toString());
+                    errorDetail.setTitle("Error de credenciales");
+
+                    errorsResponse.add(errorDetail);
+                    responseError.setErrors(errorsResponse);
+                    return new ResponseEntity<JsonApiBodyResponseErrors>(responseError, HttpStatus.UNAUTHORIZED);
+                }
             }
         }
 

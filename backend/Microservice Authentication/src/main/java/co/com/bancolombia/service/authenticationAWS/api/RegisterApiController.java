@@ -2,6 +2,7 @@ package co.com.bancolombia.service.authenticationAWS.api;
 
 import co.com.bancolombia.service.authenticationAWS.aws_delegate.AWSCognitoDelegate;
 import co.com.bancolombia.service.authenticationAWS.model.*;
+import com.amazonaws.services.cognitoidp.model.InvalidPasswordException;
 import com.amazonaws.services.cognitoidp.model.TooManyRequestsException;
 import com.amazonaws.services.cognitoidp.model.UsernameExistsException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -74,6 +75,23 @@ public class RegisterApiController implements RegisterApi {
                 return new ResponseEntity<JsonApiBodyResponseErrors>(responseError, HttpStatus.CONFLICT);
             } catch (TooManyRequestsException e) {
                 log.error("Muchas peticiones", e);
+            } catch (InvalidPasswordException e) {
+                log.error("Error al registrar el usuario: el password no cumple con los requisitos", e);
+
+                JsonApiBodyResponseErrors responseError = new JsonApiBodyResponseErrors();
+                List<ErrorDetail> errorsResponse =  new ArrayList<ErrorDetail>();
+                ErrorDetail errorDetail = new ErrorDetail();
+
+                errorDetail.setCode("0002");
+                errorDetail.setDetail("El password no cumple con los requisitos de seguridad");
+                errorDetail.setId(body.getHeader().getId());
+                errorDetail.setSource("/register");
+                errorDetail.setStatus(HttpStatus.CONFLICT.toString());
+                errorDetail.setTitle("Password inválido");
+
+                errorsResponse.add(errorDetail);
+                responseError.setErrors(errorsResponse);
+                return new ResponseEntity<JsonApiBodyResponseErrors>(responseError, HttpStatus.CONFLICT);
             }
         }
 
