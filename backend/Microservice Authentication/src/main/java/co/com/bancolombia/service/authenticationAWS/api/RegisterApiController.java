@@ -12,17 +12,10 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.constraints.*;
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-09-04T21:59:31.662-05:00")
@@ -50,7 +43,7 @@ public class RegisterApiController implements RegisterApi {
         if (accept != null && accept.contains("application/json")) {
             try {
                 AuthenticationRegisterResponse response = new AuthenticationRegisterResponse();
-                RegisterResponse sucessResponse = new RegisterResponse();
+                JsonResponseSuccess sucessResponse = new JsonResponseSuccess();
                 sucessResponse.setSuccess(true);
 
                 cognitoDelegate.signUp(body.getUserParameters());

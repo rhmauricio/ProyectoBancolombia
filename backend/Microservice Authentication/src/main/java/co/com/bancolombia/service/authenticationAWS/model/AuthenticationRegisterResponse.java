@@ -1,10 +1,8 @@
 package co.com.bancolombia.service.authenticationAWS.model;
 
 import java.util.Objects;
-import co.com.bancolombia.service.authenticationAWS.model.RegisterResponse;
+
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.validation.annotation.Validated;
 import javax.validation.Valid;
@@ -18,9 +16,9 @@ import javax.validation.constraints.*;
 
 public class AuthenticationRegisterResponse   {
   @JsonProperty("data")
-  private RegisterResponse data = null;
+  private JsonResponseSuccess data = null;
 
-  public AuthenticationRegisterResponse data(RegisterResponse data) {
+  public AuthenticationRegisterResponse data(JsonResponseSuccess data) {
     this.data = data;
     return this;
   }
@@ -34,11 +32,11 @@ public class AuthenticationRegisterResponse   {
 
   @Valid
 
-  public RegisterResponse getData() {
+  public JsonResponseSuccess getData() {
     return data;
   }
 
-  public void setData(RegisterResponse data) {
+  public void setData(JsonResponseSuccess data) {
     this.data = data;
   }
 

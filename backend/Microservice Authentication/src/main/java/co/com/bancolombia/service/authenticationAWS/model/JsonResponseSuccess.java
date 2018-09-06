@@ -2,24 +2,22 @@ package co.com.bancolombia.service.authenticationAWS.model;
 
 import java.util.Objects;
 import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonCreator;
-import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import org.springframework.validation.annotation.Validated;
-import javax.validation.Valid;
+
 import javax.validation.constraints.*;
 
 /**
- * RegisterResponse
+ * JsonResponseSuccess
  */
 @Validated
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-09-04T21:59:31.662-05:00")
 
-public class RegisterResponse   {
+public class JsonResponseSuccess {
   @JsonProperty("success")
   private Boolean success = null;
 
-  public RegisterResponse success(Boolean success) {
+  public JsonResponseSuccess success(Boolean success) {
     this.success = success;
     return this;
   }
@@ -49,8 +47,8 @@ public class RegisterResponse   {
     if (o == null || getClass() != o.getClass()) {
       return false;
     }
-    RegisterResponse registerResponse = (RegisterResponse) o;
-    return Objects.equals(this.success, registerResponse.success);
+    JsonResponseSuccess jsonResponseSuccess = (JsonResponseSuccess) o;
+    return Objects.equals(this.success, jsonResponseSuccess.success);
   }
 
   @Override
@@ -61,7 +59,7 @@ public class RegisterResponse   {
   @Override
   public String toString() {
     StringBuilder sb = new StringBuilder();
-    sb.append("class RegisterResponse {\n");
+    sb.append("class JsonResponseSuccess {\n");
     
     sb.append("    success: ").append(toIndentedString(success)).append("\n");
     sb.append("}");

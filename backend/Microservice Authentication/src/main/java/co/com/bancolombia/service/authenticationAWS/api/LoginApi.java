@@ -37,5 +37,4 @@ public interface LoginApi {
         consumes = { "application/json" },
         method = RequestMethod.POST)
     ResponseEntity<?> loginPost(@ApiParam(value = "body" ,required=true )  @Valid @RequestBody LoginRequest body);
-
 }

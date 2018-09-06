@@ -15,6 +15,26 @@ public class VerificationRequest {
     @JsonProperty("verificationCode")
     private String verificationCode = null;
 
+    @JsonProperty("userName")
+    private String userName = null;
+
+
+    /**
+     * Get userName
+     * @return userName
+     */
+    @ApiModelProperty(required = true, value = "")
+    @NotNull
+
+    @Valid
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
     public VerificationRequest header(Header header) {
         this.header = header;
         return this;
@@ -70,12 +90,13 @@ public class VerificationRequest {
         }
         VerificationRequest verificationRequest = (VerificationRequest) o;
         return Objects.equals(this.header, verificationRequest.header) &&
+                Objects.equals(this.userName, verificationRequest.userName) &&
                 Objects.equals(this.verificationCode, verificationRequest.verificationCode);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(header, verificationCode);
+        return Objects.hash(header,userName,  verificationCode);
     }
 
     @Override
@@ -84,7 +105,8 @@ public class VerificationRequest {
         sb.append("class LoginRequest {\n");
 
         sb.append("    header: ").append(toIndentedString(header)).append("\n");
-        sb.append("    credentials: ").append(toIndentedString(verificationCode)).append("\n");
+        sb.append("    user: ").append(toIndentedString(userName)).append("\n");
+        sb.append("    code: ").append(toIndentedString(verificationCode)).append("\n");
         sb.append("}");
         return sb.toString();
     }

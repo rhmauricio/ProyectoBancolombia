@@ -89,6 +89,8 @@ public class AWSCognitoDelegate {
     public AWSCognitoDelegate() {
         properties = loadConfigProperties();
         cognitoClient = AWSCognitoIdentityProviderClientBuilder.defaultClient();
+
+        initPoolParameters();
     }
 
     /**
@@ -103,13 +105,6 @@ public class AWSCognitoDelegate {
 
         List<AttributeType> userAttributes = new ArrayList<>();
         AttributeType userAttribute;
-
-        if (properties != null) {
-            POOL_ID = properties.getProperty("lamda-pool.user-id");
-            CLIENT_POOL_ID = properties.getProperty("lambda-pool.client-id");
-        } else {
-            POOL_ID = "us-east-1_gC5ImxfcC";
-        }
 
         /* Sets the required attributes
         to register a user */
@@ -151,6 +146,22 @@ public class AWSCognitoDelegate {
         cognitoClient.confirmSignUp(confirmSignUpRequest);
     }
 
+
+    /**
+     *
+     * @param username
+     * @throws AWSCognitoIdentityProviderException
+     */
+    public void resendVerificationCode(String username)
+            throws AWSCognitoIdentityProviderException {
+        ResendConfirmationCodeRequest resendCodeRequest = new ResendConfirmationCodeRequest();
+
+        resendCodeRequest.setClientId(CLIENT_POOL_ID);
+        resendCodeRequest.setUsername(username);
+
+        cognitoClient.resendConfirmationCode(resendCodeRequest);
+    }
+
     /**
      *
      * @param username
@@ -160,12 +171,7 @@ public class AWSCognitoDelegate {
     public void authenticateUser(String username, String password)
             throws AWSCognitoIdentityProviderException  {
 
-        if (properties != null) {
-            POOL_ID = properties.getProperty("lamda-pool.user-id");
-            CLIENT_POOL_ID = properties.getProperty("lambda-pool.client-id");
-        } else {
-            POOL_ID = "us-east-1_gC5ImxfcC";
-        }
+        initSRPParameters();
 
         InitiateAuthRequest authRequest = new InitiateAuthRequest();
 
@@ -178,7 +184,8 @@ public class AWSCognitoDelegate {
         InitiateAuthResult authResult = cognitoClient.initiateAuth(authRequest);
 
         if (ChallengeNameType.PASSWORD_VERIFIER.toString().equals(authResult.getChallengeName())) {
-
+            RespondToAuthChallengeRequest challengeRequest = userSrpAuthRequest(authResult, password);
+            cognitoClient.respondToAuthChallenge(challengeRequest);
         }
     }
 
@@ -283,6 +290,15 @@ public class AWSCognitoDelegate {
             a = new BigInteger(EPHEMERAL_KEY_LENGTH, SECURE_RANDOM).mod(n);
             A = g.modPow(a, n);
         } while (A.mod(n).equals(BigInteger.ZERO));
+    }
+
+    private void initPoolParameters() {
+        if (properties != null) {
+            POOL_ID = properties.getProperty("lamda-pool.user-id");
+            CLIENT_POOL_ID = properties.getProperty("lambda-pool.client-id");
+        } else {
+            POOL_ID = "us-east-1_gC5ImxfcC";
+        }
     }
 
     /**
