@@ -1,6 +1,7 @@
 package co.com.bancolombia.service.authenticationAWS.api;
 
 import co.com.bancolombia.service.authenticationAWS.aws_delegate.AWSCognitoDelegate;
+import co.com.bancolombia.service.authenticationAWS.aws_delegate.AWSDynamoDBDelegate;
 import co.com.bancolombia.service.authenticationAWS.model.*;
 import com.amazonaws.services.cognitoidp.model.InvalidPasswordException;
 import com.amazonaws.services.cognitoidp.model.TooManyRequestsException;
@@ -47,6 +48,18 @@ public class RegisterApiController implements RegisterApi {
                 sucessResponse.setSuccess(true);
 
                 cognitoDelegate.signUp(body.getUserParameters());
+
+                // Si se registra exitosámente, se almacena
+                // la data del usuario en DB
+                User user = new User();
+                UserParameters registerParameters = body.getUserParameters();
+
+                user.setUserName(registerParameters.getEmail());
+                user.setFirstName(registerParameters.getFirstName());
+                user.setLastName(registerParameters.getLastName());
+                user.setPhoneNumber(registerParameters.getPhoneNumber());
+
+                AWSDynamoDBDelegate.createRegister(user);
 
                 return new ResponseEntity<AuthenticationRegisterResponse>(response.data(sucessResponse), HttpStatus.OK);
             } catch (UsernameExistsException e) {
