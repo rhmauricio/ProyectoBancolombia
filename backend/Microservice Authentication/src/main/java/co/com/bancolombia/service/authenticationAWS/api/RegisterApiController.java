@@ -1,9 +1,14 @@
 package co.com.bancolombia.service.authenticationAWS.api;
 
 import co.com.bancolombia.service.authenticationAWS.aws_delegate.AWSCognitoDelegate;
+import co.com.bancolombia.service.authenticationAWS.aws_delegate.AWSDynamoDBDelegate;
 import co.com.bancolombia.service.authenticationAWS.model.*;
 import com.amazonaws.services.cognitoidp.model.TooManyRequestsException;
 import com.amazonaws.services.cognitoidp.model.UsernameExistsException;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.xspec.S;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -37,6 +42,8 @@ public class RegisterApiController implements RegisterApi {
 
     private AWSCognitoDelegate cognitoDelegate;
 
+    private AWSDynamoDBDelegate AWSDynamoDBDelegate;
+
     @org.springframework.beans.factory.annotation.Autowired
     public RegisterApiController(ObjectMapper objectMapper, HttpServletRequest request) {
         this.objectMapper = objectMapper;
@@ -52,7 +59,11 @@ public class RegisterApiController implements RegisterApi {
                 RegisterResponse sucessResponse = new RegisterResponse();
                 sucessResponse.setSuccess(true);
 
-                cognitoDelegate.signUp(body.getUserParameters());
+
+                //cognitoDelegate.signUp(body.getUserParameters());
+
+                //LoginResponse loginResponse=new LoginResponse();
+                //List<String> datos = new ArrayList<>();
 
                 return new ResponseEntity<AuthenticationRegisterResponse>(response.data(sucessResponse), HttpStatus.OK);
             } catch (UsernameExistsException e) {

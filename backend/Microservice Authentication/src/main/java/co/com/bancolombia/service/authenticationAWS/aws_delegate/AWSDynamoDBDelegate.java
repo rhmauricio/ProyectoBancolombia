@@ -1,59 +1,71 @@
 package co.com.bancolombia.service.authenticationAWS.aws_delegate;
 
 
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBAttribute;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBHashKey;
-import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBTable;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDB;
+import com.amazonaws.services.dynamodbv2.AmazonDynamoDBClientBuilder;
+import com.amazonaws.services.dynamodbv2.datamodeling.DynamoDBMapper;
+import com.amazonaws.services.dynamodbv2.document.Table;
+import com.amazonaws.services.dynamodbv2.document.TableCollection;
+import com.amazonaws.services.dynamodbv2.model.ListTablesResult;
+import com.amazonaws.services.dynamodbv2.model.ProvisionedThroughput;
+import com.amazonaws.services.dynamodbv2.model.TableDescription;
+import com.amazonaws.services.dynamodbv2.document.DynamoDB;
+
+import java.util.Iterator;
 
 public class AWSDynamoDBDelegate {
-    private class User;
 
-    public  AWSDynamoDBDelegate(){
-        user user = new user();
+    private static AmazonDynamoDB client = AmazonDynamoDBClientBuilder.defaultClient();
+
+    public static DynamoDBMapper dynamoDBMapper = new DynamoDBMapper(client);
+
+    /*
+    static void listMyTables() {
+
+        TableCollection<ListTablesResult> tables = dynamoDB.listTables();
+        Iterator<Table> iterator = tables.iterator();
+
+        System.out.println("Listing table names");
+
+        while (iterator.hasNext()) {
+            Table table = iterator.next();
+            System.out.println(table.getTableName());
+        }
+    }*/
+
+    /*
+    static void getTableInformation() {
+
+        System.out.println("Describing " + tableName);
+
+        TableDescription tableDescription = dynamoDB.getTable(tableName).describe();
+        System.out.format(
+                "Name: %s:\n" + "Status: %s \n" + "Provisioned Throughput (read capacity units/sec): %d \n"
+                        + "Provisioned Throughput (write capacity units/sec): %d \n",
+                tableDescription.getTableName(), tableDescription.getTableStatus(),
+                tableDescription.getProvisionedThroughput().getReadCapacityUnits(),
+                tableDescription.getProvisionedThroughput().getWriteCapacityUnits());
+    }*/
+
+    public static <T extends Object> void createRegister(T data) {
+        dynamoDBMapper.save(data);
     }
 
+    public static <T extends Object>T readRegister(Class<T> object, Object id) {
+        return dynamoDBMapper.load(object, id);
+    }
 
-    @DynamoDBTable(tableName="User")
-    private class User {
+    public static <T extends Object>boolean updateRegister(Class<T> object, Object id, T newData) {
+        T register = dynamoDBMapper.load(object, id);
 
-        private String userName;
-        private Integer userId;
-        private String passwordHash;
-        private String openIdToken;
-        private String Phone;
+        if (register != null) {
+            dynamoDBMapper.save(newData);
 
-
-        @DynamoDBHashKey(attributeName="username")
-        public String getUserName() { return userName; }
-        public void setUserName(String userName) { this.userName = userName; }
-
-        @DynamoDBAttribute(attributeName="userid")
-        public Integer getUserId() { return userId; }
-        public void setUserId(Integer userId) { this.userId = userId; }
-
-        @DynamoDBAttribute(attributeName="passwordhash")
-        public String getPasswordHash() { return passwordHash; }
-        public void setPasswordHash(String passwordHash) { this.passwordHash = passwordHash; }
-
-        @DynamoDBAttribute(attributeName="openidtoken")
-        public String getOpenIdToken() { return openIdToken; }
-        public void setOpenIdToken(String openIdToken) { this.openIdToken = openIdToken; }
-
-
-
-        public User(String userName, Integer userId, String passwordHash, String openIdToken) {
-            this.userName = userName;
-            this.userId = userId;
-            this.passwordHash = passwordHash;
-            this.openIdToken = openIdToken;
+            return true;
         }
 
-        public User(){ }
+        return false;
     }
-
-
-
-
 
 }
 
