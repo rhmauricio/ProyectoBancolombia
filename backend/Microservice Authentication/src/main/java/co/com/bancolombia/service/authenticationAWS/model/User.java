@@ -12,6 +12,8 @@ public class User {
     private String lastName;
     private String phoneNumber;
     private String password;
+    private String accessToken;
+    private String refreshToken;
 
     @DynamoDBHashKey(attributeName = "username")
     public String getUserName() {
@@ -56,5 +58,23 @@ public class User {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    @DynamoDBAttribute(attributeName = "accessToken")
+    public String getAccessToken() {
+        return accessToken;
+    }
+
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
+    }
+
+    @DynamoDBAttribute(attributeName = "refreshToken")
+    public String getRefreshToken() {
+        return refreshToken;
+    }
+
+    public void setRefreshToken(String refreshToken) {
+        this.refreshToken = refreshToken;
     }
 }

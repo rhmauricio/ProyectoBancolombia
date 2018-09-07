@@ -123,5 +123,10 @@
       }
     }
   },
-  "defaultProject": "aws-proyecto"
+  "defaultProject": "aws-proyecto",
+  "schematics": {
+    "@schematics/angular:component": {
+      "styleext": "scss"
+    }
+  }
 }

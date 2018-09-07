@@ -1,10 +1,9 @@
 package co.com.bancolombia.service.authenticationAWS.api;
 
 import co.com.bancolombia.service.authenticationAWS.aws_delegate.AWSCognitoDelegate;
+import co.com.bancolombia.service.authenticationAWS.aws_delegate.AWSDynamoDBDelegate;
 import co.com.bancolombia.service.authenticationAWS.model.*;
-import com.amazonaws.services.cognitoidp.model.AWSCognitoIdentityProviderException;
-import com.amazonaws.services.cognitoidp.model.UserNotConfirmedException;
-import com.amazonaws.services.cognitoidp.model.UserNotFoundException;
+import com.amazonaws.services.cognitoidp.model.*;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -49,9 +48,20 @@ public class LoginApiController implements LoginApi {
         String accept = request.getHeader("Content-Type");
         if (accept != null && accept.contains("application/json")) {
             try {
+                AuthenticationResultType loginResult;
                 Credentials userCredentials = body.getCredentials();
 
-                cognitoDelegate.authenticateUser(userCredentials.getUser(), userCredentials.getPassword());
+                loginResult = cognitoDelegate.authenticateUser(userCredentials.getUser(), userCredentials.getPassword());
+
+                if (loginResult != null) {
+                    User userData = AWSDynamoDBDelegate.readRegister(User.class, userCredentials.getUser());
+                    userData.setAccessToken(loginResult.getAccessToken());
+                    userData.setRefreshToken(loginResult.getRefreshToken());
+
+                    AWSDynamoDBDelegate.updateRegister(User.class, userData.getUserName(), userData);
+
+                    return new ResponseEntity<>(new LoginResponse().success(true), HttpStatus.OK);
+                }
             } catch (AWSCognitoIdentityProviderException e) {
                 if (e instanceof UserNotConfirmedException) {
                     log.error("Error al iniciar sesión: el usuario no está verificado", e);
@@ -89,6 +99,25 @@ public class LoginApiController implements LoginApi {
                     errorsResponse.add(errorDetail);
                     responseError.setErrors(errorsResponse);
                     return new ResponseEntity<JsonApiBodyResponseErrors>(responseError, HttpStatus.UNAUTHORIZED);
+                }
+
+                if (e instanceof NotAuthorizedException) {
+                    log.error("Error de credenciales: password incorrecto");
+
+                    JsonApiBodyResponseErrors responseError = new JsonApiBodyResponseErrors();
+                    List<ErrorDetail> errorsResponse =  new ArrayList<>();
+                    ErrorDetail errorDetail = new ErrorDetail();
+
+                    errorDetail.setCode("0003");
+                    errorDetail.setDetail("El usuario o la contraseña son incorrectos");
+                    errorDetail.setId(body.getHeader().getId());
+                    errorDetail.setSource("/login");
+                    errorDetail.setStatus(HttpStatus.UNAUTHORIZED.toString());
+                    errorDetail.setTitle("Error de credenciales");
+
+                    errorsResponse.add(errorDetail);
+                    responseError.setErrors(errorsResponse);
+                    return new ResponseEntity<>(responseError, HttpStatus.UNAUTHORIZED);
                 }
             }
         }
