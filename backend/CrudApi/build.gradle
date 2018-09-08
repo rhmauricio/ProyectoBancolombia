@@ -1,0 +1,52 @@
+apply plugin: 'java'
+apply plugin: 'eclipse'
+apply plugin: 'org.springframework.boot'
+
+buildscript {
+	ext {
+		springBootVersion = '1.5.13.RELEASE'
+	}
+	repositories {
+		mavenCentral()
+	}
+	dependencies {
+		classpath("org.springframework.boot:spring-boot-gradle-plugin:${springBootVersion}")
+		classpath "io.spring.gradle:dependency-management-plugin:1.0.3.RELEASE"
+	}
+}
+
+apply plugin: "io.spring.dependency-management"
+
+dependencyManagement {
+	imports {
+		mavenBom 'com.amazonaws:aws-java-sdk-bom:1.11.228'
+	}
+}
+
+group = 'co.com.bancolombia.service.crudAWS'
+version = '1.0.0'
+
+description = """CRUD API with AWS"""	
+
+
+sourceCompatibility = 1.8
+
+jar {
+	baseName = 'crud-aws-api'
+	version =  '1.0'
+}
+
+repositories {
+		mavenCentral()
+}
+dependencies {
+	compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version:'1.5.13.RELEASE'
+	compile group: 'io.springfox', name: 'springfox-swagger2', version:'2.7.0'
+	compile group: 'io.springfox', name: 'springfox-swagger-ui', version:'2.7.0'
+
+	compile 'com.amazonaws:aws-java-sdk-s3'
+	compile 'com.amazonaws:aws-java-sdk-dynamodb'
+	compile 'com.amazonaws:aws-java-sdk-cognito'
+	compile 'com.amazonaws:aws-java-sdk-cognitoidp'
+	testCompile group: 'junit', name: 'junit', version: '4.11'
+}

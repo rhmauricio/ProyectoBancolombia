@@ -1,9 +1,0 @@
-{  
-    "basePackage":"co.com.bancolombia.service.authenticationAWS",
-    "configPackage":"co.com.bancolombia.service.authenticationAWS.config",
-    "apiPackage":"co.com.bancolombia.service.authenticationAWS.api",
-    "modelPackage":"co.com.bancolombia.service.authenticationAWS.model",
-    "groupId":"co.com.bancolombia.service.authenticationAWS",
-    "artifactId":"authentication-apiAWS"
- }
- 
