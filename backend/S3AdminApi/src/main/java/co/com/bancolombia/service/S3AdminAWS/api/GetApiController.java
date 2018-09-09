@@ -1,8 +1,8 @@
 package co.com.bancolombia.service.S3AdminAWS.api;
 
-import co.com.bancolombia.service.S3AdminAWS.model.GetS3Request;
-import co.com.bancolombia.service.S3AdminAWS.model.JsonApiBodyResponseErrors;
-import co.com.bancolombia.service.S3AdminAWS.model.S3ObjectResponse;
+import co.com.bancolombia.service.S3AdminAWS.aws_delegate.AWSS3Delegate;
+import co.com.bancolombia.service.S3AdminAWS.model.*;
+import com.amazonaws.AmazonServiceException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.swagger.annotations.*;
 import org.slf4j.Logger;
@@ -21,7 +21,9 @@ import javax.validation.constraints.*;
 import javax.validation.Valid;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-09-07T20:01:37.027-05:00")
 
 @Controller
@@ -33,20 +35,53 @@ public class GetApiController implements GetApi {
 
     private final HttpServletRequest request;
 
+    private AWSS3Delegate awss3Delegate;
+
     @org.springframework.beans.factory.annotation.Autowired
     public GetApiController(ObjectMapper objectMapper, HttpServletRequest request) {
         this.objectMapper = objectMapper;
         this.request = request;
+        this.awss3Delegate = new AWSS3Delegate();
     }
 
-    public ResponseEntity<S3ObjectResponse> getGet(@ApiParam(value = "body" ,required=true )  @Valid @RequestBody GetS3Request body) {
+    public ResponseEntity<?> getGet(@ApiParam(value = "body", required = true) @Valid @RequestBody GetS3Request body)  {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
             try {
-                return new ResponseEntity<S3ObjectResponse>(objectMapper.readValue("{  \"data\" : \"{}\"}", S3ObjectResponse.class), HttpStatus.NOT_IMPLEMENTED);
+                String image = awss3Delegate.s3Get(body.getKeyName());
+                return new ResponseEntity<>(new S3ObjectResponse().data(image), HttpStatus.OK);
             } catch (IOException e) {
                 log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<S3ObjectResponse>(HttpStatus.INTERNAL_SERVER_ERROR);
+                JsonApiBodyResponseErrors responseError = new JsonApiBodyResponseErrors();
+                List<ErrorDetail> errorsResponse =  new ArrayList<ErrorDetail>();
+                ErrorDetail errorDetail = new ErrorDetail();
+
+                errorDetail.setCode("0001");
+                errorDetail.setDetail("error interno IOException");
+                errorDetail.setId(body.getHeader().getId());
+                errorDetail.setSource("/S3");
+                errorDetail.setStatus(HttpStatus.CONFLICT.toString());
+                errorDetail.setTitle("error con traer imagen");
+
+                errorsResponse.add(errorDetail);
+                responseError.setErrors(errorsResponse);
+                return new ResponseEntity<JsonApiBodyResponseErrors>(responseError, HttpStatus.CONFLICT);
+            } catch (AmazonServiceException e) {
+                log.error("Error trayendo la imagen de aws");
+                JsonApiBodyResponseErrors responseError = new JsonApiBodyResponseErrors();
+                List<ErrorDetail> errorsResponse =  new ArrayList<ErrorDetail>();
+                ErrorDetail errorDetail = new ErrorDetail();
+
+                errorDetail.setCode("0001");
+                errorDetail.setDetail("error interno AmazonServiceException");
+                errorDetail.setId(body.getHeader().getId());
+                errorDetail.setSource("/S3");
+                errorDetail.setStatus(HttpStatus.CONFLICT.toString());
+                errorDetail.setTitle("error con traer imagen");
+
+                errorsResponse.add(errorDetail);
+                responseError.setErrors(errorsResponse);
+                return new ResponseEntity<JsonApiBodyResponseErrors>(responseError, HttpStatus.CONFLICT);
             }
         }
 

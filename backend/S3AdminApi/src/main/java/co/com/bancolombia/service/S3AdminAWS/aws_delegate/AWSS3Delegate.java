@@ -3,32 +3,32 @@ package co.com.bancolombia.service.S3AdminAWS.aws_delegate;
 import com.amazonaws.AmazonServiceException;
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.AmazonS3ClientBuilder;
-import com.amazonaws.services.s3.model.ObjectListing;
-import com.amazonaws.services.s3.model.S3Object;
-import com.amazonaws.services.s3.model.S3ObjectInputStream;
-import com.amazonaws.services.s3.model.S3ObjectSummary;
+import com.amazonaws.services.s3.model.*;
+import sun.misc.BASE64Decoder;
 
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.util.Base64;
 import java.util.List;
 
 public class AWSS3Delegate {
 
     private final AmazonS3 s3 = AmazonS3ClientBuilder.defaultClient();
+    private final static String BUCKET_NAME = "bancolombia.demo-users-images";
 
     public AWSS3Delegate() {
-
     }
 
-    public void s3Save(String bucket_name, String key_name, String file_path) {
-        try {
-            s3.putObject(bucket_name, key_name, new File(file_path));
-        } catch (AmazonServiceException e) {
-            System.err.println(e.getErrorMessage());
-            System.exit(1);
-        }
+    public void s3Save(String key_name, String imageBase64) throws AmazonServiceException,IOException{
+
+            byte[] imagebyte;
+            BASE64Decoder decoder = new BASE64Decoder();
+            imagebyte=decoder.decodeBuffer(imageBase64);
+            InputStream inputStream = new ByteArrayInputStream(imagebyte);
+
+            ObjectMetadata metadata = new ObjectMetadata();
+            metadata.setContentType("image");
+            PutObjectRequest putObjectRequest = new PutObjectRequest(BUCKET_NAME, key_name, inputStream,metadata);
+            s3.putObject(putObjectRequest);
 
     }
 
@@ -37,28 +37,34 @@ public class AWSS3Delegate {
         return ol.getObjectSummaries();
     }
 
-    public void s3Update(String bucket_name, String key_name) {
-        try {
-            S3Object o = s3.getObject(bucket_name, key_name);
-            S3ObjectInputStream s3is = o.getObjectContent();
-            FileOutputStream fos = new FileOutputStream(new File(key_name));
-            byte[] read_buf = new byte[1024];
-            int read_len = 0;
-            while ((read_len = s3is.read(read_buf)) > 0) {
-                fos.write(read_buf, 0, read_len);
-            }
-            s3is.close();
-            fos.close();
-        } catch (AmazonServiceException e) {
-            System.err.println(e.getErrorMessage());
-            System.exit(1);
-        } catch (FileNotFoundException e) {
-            System.err.println(e.getMessage());
-            System.exit(1);
-        } catch (IOException e) {
-            System.err.println(e.getMessage());
-            System.exit(1);
+    public String s3Get(String key_name) throws AmazonServiceException, IOException {
+
+        /*
+        EN s3 se guarda el el objeto de buket, en S3ObjectInputStream se guarda el objeto escpecifico
+        en la variable fos se guardan los bytes de el objeto s3
+         */
+        S3Object o = s3.getObject(BUCKET_NAME, key_name);
+        S3ObjectInputStream s3is = o.getObjectContent();
+        ByteArrayOutputStream fos = new ByteArrayOutputStream();
+
+        // Tamaño del bufer a leer
+        final byte[] read_buf = new byte[1024];
+
+        // Primera lectura
+        int read_len = s3is.read(read_buf);
+
+        // Lee todos los bytes del objeto s3is
+        while (read_len > 0) {
+            fos.write(read_buf, 0, read_len);
+            read_len = s3is.read(read_buf);
         }
+        s3is.close();
+
+
+        return Base64.getEncoder()
+                .withoutPadding()
+                .encodeToString(fos.toByteArray());
     }
+
 
 }
