@@ -11,6 +11,7 @@ import {ShareDataService} from '../share-data.service';
 export class LoginComponent implements OnInit {
 
   username: string;
+  token: string;
   password: string;
   verificationCode: string;
   errorMsg: string;
@@ -39,8 +40,10 @@ export class LoginComponent implements OnInit {
     this.authentication.loginRequest(this.username, this.password)
       .subscribe(
         result => {
-          console.log(result);
+          // console.log(result);
+          this.token = result.tokenId;
           this.share.changeUsername(this.username);
+          this.share.changeToken(this.token);
           this.router.navigateByUrl('/dashboard');
         },
         error => {

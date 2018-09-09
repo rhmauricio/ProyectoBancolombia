@@ -28,7 +28,7 @@
       </div>
     </div>
   </div>
-  <app-lambda-page *ngIf="lambdaPage"></app-lambda-page>
+  <app-lambda-page *ngIf="lambdaPage" [token]="token"></app-lambda-page>
   <app-dynamo-page *ngIf="dynamoPage"></app-dynamo-page>
   <app-s3-page *ngIf="s3Page"></app-s3-page>
 </div>

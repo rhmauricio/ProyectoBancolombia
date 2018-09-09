@@ -1,5 +1,6 @@
 import {Component, OnInit} from '@angular/core';
 import {ShareDataService} from '../share-data.service';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-dashboard',
@@ -9,21 +10,30 @@ import {ShareDataService} from '../share-data.service';
 export class DashboardComponent implements OnInit {
 
   username: string;
+  token: string;
 
   lambdaPage: boolean;
   dynamoPage: boolean;
   s3Page: boolean;
 
   constructor(
-    private share: ShareDataService
+    private share: ShareDataService,
+    private router: Router
   ) { }
 
   ngOnInit() {
     this.lambdaPage = false;
     this.dynamoPage = false;
     this.s3Page = false;
+
     this.share.username.subscribe(username => this.username = username);
-    console.log(this.username);
+    this.share.token.subscribe(token => this.token = token);
+
+    if (this.username === '') {
+      this.router.navigateByUrl('/login');
+    }
+
+    console.log(this.token);
   }
 
   onLambdaClick() {

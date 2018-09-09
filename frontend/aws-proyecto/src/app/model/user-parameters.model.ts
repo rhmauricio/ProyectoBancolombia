@@ -4,6 +4,7 @@ export class UserParameters {
   public firstName: string;
   public lastName: string;
   public phoneNumber: string;
+  public password: string;
   public role: string;
   public verificationCode: number;
 

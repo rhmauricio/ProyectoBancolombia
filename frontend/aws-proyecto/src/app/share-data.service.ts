@@ -6,15 +6,25 @@ import {BehaviorSubject} from 'rxjs';
 })
 export class ShareDataService {
 
-  private messageSource = new BehaviorSubject('');
+  private nameSource = new BehaviorSubject('');
+
+  private tokenSource = new BehaviorSubject('');
 
   constructor() { }
 
   get username() {
-    return this.messageSource.asObservable();
+    return this.nameSource.asObservable();
+  }
+
+  get token() {
+    return this.tokenSource.asObservable();
   }
 
   changeUsername(username: string) {
-    this.messageSource.next(username);
+    this.nameSource.next(username);
+  }
+
+  changeToken(token: string) {
+    this.tokenSource.next(token);
   }
 }

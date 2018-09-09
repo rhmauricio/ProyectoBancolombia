@@ -58,9 +58,13 @@ public class LoginApiController implements LoginApi {
                     userData.setAccessToken(loginResult.getAccessToken());
                     userData.setRefreshToken(loginResult.getRefreshToken());
 
+                    LoginResponse response = new LoginResponse()
+                            .success(true)
+                            .tokenId(loginResult.getIdToken());
+
                     AWSDynamoDBDelegate.updateRegister(User.class, userData.getUserName(), userData);
 
-                    return new ResponseEntity<>(new LoginResponse().success(true), HttpStatus.OK);
+                    return new ResponseEntity<>(response, HttpStatus.OK);
                 }
             } catch (AWSCognitoIdentityProviderException e) {
                 if (e instanceof UserNotConfirmedException) {

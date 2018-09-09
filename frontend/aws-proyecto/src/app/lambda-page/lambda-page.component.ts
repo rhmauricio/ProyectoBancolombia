@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, Input, OnInit} from '@angular/core';
+import {AwsLambdaService} from '../aws-lambda.service';
 
 @Component({
   selector: 'app-lambda-page',
@@ -7,9 +8,25 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LambdaPageComponent implements OnInit {
 
-  constructor() { }
+  @Input() token: string;
+
+  response: any;
+
+  constructor(
+    private aws_lambda: AwsLambdaService
+  ) { }
 
   ngOnInit() {
+  }
+
+  lambdaGetCall() {
+    this.aws_lambda.getCall(this.token)
+      .subscribe(
+        result => {
+          console.log(result);
+          this.response = result;
+        }
+      );
   }
 
 }
