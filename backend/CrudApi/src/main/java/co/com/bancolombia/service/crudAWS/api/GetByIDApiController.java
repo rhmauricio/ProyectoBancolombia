@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.websocket.server.PathParam;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,35 +38,29 @@ public class GetByIDApiController implements GetByIDApi {
     }
 
     public ResponseEntity<?> getUserByID(@PathVariable("id") String id) {
-        String accept = request.getHeader("Accept");
-        if (accept != null && accept.contains("application/json")) {
-            try {
-                User user = new User();
-                user = awsDynamoDBDelegate.readRegister(User.class, id);
-                userParameters
-                        .email(user.getUserName())
-                        .firstName(user.getFirstName())
-                        .lastName(user.getLastName())
-                        .phoneNumber(user.getPhoneNumber());
-                return new ResponseEntity<>(new SingleUserResponseSuccess().data(userParameters), HttpStatus.OK);
-            } catch (AmazonServiceException e) {
-                JsonApiBodyResponseErrors responseError = new JsonApiBodyResponseErrors();
-                List<ErrorDetail> errorsResponse =  new ArrayList<>();
-                ErrorDetail errorDetail = new ErrorDetail();
+        try {
+            User user = awsDynamoDBDelegate.readRegister(User.class, id);
+            userParameters
+                    .email(user.getUserName())
+                    .firstName(user.getFirstName())
+                    .lastName(user.getLastName())
+                    .phoneNumber(user.getPhoneNumber());
+            return new ResponseEntity<>(new SingleUserResponseSuccess().data(userParameters), HttpStatus.OK);
+        } catch (AmazonServiceException e) {
+            JsonApiBodyResponseErrors responseError = new JsonApiBodyResponseErrors();
+            List<ErrorDetail> errorsResponse = new ArrayList<>();
+            ErrorDetail errorDetail = new ErrorDetail();
 
-                errorDetail.setCode("0001");
-                errorDetail.setDetail("Error en buscar por id");
-                errorDetail.setId(id);
-                errorDetail.setSource("/login");
-                errorDetail.setStatus(HttpStatus.CONFLICT.toString());
-                errorDetail.setTitle("Datos por id no encontrados");
-                errorsResponse.add(errorDetail);
-                responseError.setErrors(errorsResponse);
-                return new ResponseEntity<JsonApiBodyResponseErrors>(responseError, HttpStatus.BAD_REQUEST);
-            }
+            errorDetail.setCode("0001");
+            errorDetail.setDetail("Error en buscar por id");
+            errorDetail.setId(id);
+            errorDetail.setSource("/login");
+            errorDetail.setStatus(HttpStatus.CONFLICT.toString());
+            errorDetail.setTitle("Datos por id no encontrados");
+            errorsResponse.add(errorDetail);
+            responseError.setErrors(errorsResponse);
+            return new ResponseEntity<JsonApiBodyResponseErrors>(responseError, HttpStatus.BAD_REQUEST);
         }
-
-        return new ResponseEntity<SingleUserResponseSuccess>(HttpStatus.NOT_IMPLEMENTED);
     }
 
 }

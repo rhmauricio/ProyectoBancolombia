@@ -33,7 +33,6 @@ public interface GetByIDApi {
             @ApiResponse(code = 401, message = "Unathorized. user has not permissions", response = JsonApiBodyResponseErrors.class)})
     @RequestMapping(value = "/get/{id}",
             produces = {"application/json"},
-            consumes = {"application/json"},
             method = RequestMethod.GET)
     ResponseEntity<?> getUserByID(@PathVariable("id") String id);
 
