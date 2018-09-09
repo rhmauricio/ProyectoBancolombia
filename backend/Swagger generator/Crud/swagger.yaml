@@ -1,0 +1,200 @@
+swagger: '2.0'
+info:
+  description: Servicio CRUD DynamoDB 
+  version: 1.0.0
+  title: Servicio CRUD DynamoDB 
+  contact:
+    email: mauricio.ramirez1@udea.edu.co
+host: 'localhost:8090'
+basePath: /Users
+paths:
+  /getAll:
+    get:
+      tags:
+        - lista-usuarios-api-controller
+      summary: Trae la informacion de usuarios registrados 
+      description: Trae la informacion de usuarios registrados 
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: body
+          required: true
+          schema:
+            $ref: '#/definitions/JsonApiBodyRequest'
+      responses:
+        '200':
+          description: Inquery step success
+          schema:
+            $ref: '#/definitions/UsersResponseSuccess'
+        '401':
+          description: Unathorized. user has not permissions
+          schema:
+            $ref: '#/definitions/JsonApiBodyResponseErrors'
+  /getByID:
+    get:
+      tags:
+        - datos-de-un-usuario
+      summary: trae la informacion de un solo usuario 
+      description: Trae la informacion de un solo usuario con base en el id proporcionado
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: body
+          required: true
+          schema:
+            $ref: '#/definitions/JsonApiBodyRequest'
+      responses:
+        '200':
+          description: Inquery step success
+          schema:
+            $ref: '#/definitions/SingleUserResponseSuccess'
+        '401':
+          description: Unathorized. user has not permissions
+          schema:
+            $ref: '#/definitions/JsonApiBodyResponseErrors'
+  /update:
+    put:
+      tags:
+        - actualiza-la-informacion-de-un-usuario
+      summary: actualiza la informacion de un usuario 
+      description: actualiza la informacion de un usuario en la tabla
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: body
+          required: true
+          schema:
+            $ref: '#/definitions/UpdateRequest'
+      responses:
+        '200':
+          description: Inquery step success
+          schema:
+            $ref: '#/definitions/JsonResponseSuccess'
+        '401':
+          description: Unathorized. user has not permissions
+          schema:
+            $ref: '#/definitions/JsonApiBodyResponseErrors'
+definitions:
+  UpdateRequest:
+    type: object
+    required:
+      - header
+      - userData
+    properties:
+      header:
+        $ref: '#/definitions/Header'
+      userData: 
+        $ref: '#/definitions/UserParameters'
+  JsonApiBodyRequest:
+    type: object
+    required:
+      - header
+    properties:
+      header:
+        $ref: '#/definitions/Header'
+  Header:
+    type: object
+    required:
+      - id
+      - type
+    properties:
+      id:
+        type: string
+      type:
+        type: string  
+  JsonResponseSuccess:
+    type: object
+    required:
+      - header
+      - success
+    properties:
+      header:
+        $ref: '#/definitions/Header'
+      success:
+        type: boolean
+  JsonApiBodyResponseErrors:
+    type: object
+    required:
+      - errors
+    properties:
+      errors:
+        type: array
+        items:
+          $ref: '#/definitions/ErrorDetail'
+  ErrorDetail:
+    type: object
+    required:
+      - code
+      - detail
+      - id
+      - source
+      - status
+      - title
+    properties:
+      code:
+        type: string
+      detail:
+        type: string
+      id:
+        type: string
+      source:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+  SingleUserResponseSuccess:
+    type: object
+    required:
+      - data
+    properties:
+      data:
+        $ref: '#/definitions/UserParameters'
+  UsersResponseSuccess:
+    type: object
+    required:
+      - data
+    properties:
+      data:
+        type: array
+        items:
+          $ref: '#/definitions/UserParameters'
+  UserParameters:
+    type: object
+    required:
+      - firstName
+      - lastName
+      - email
+      - password
+      - phoneNumber
+      - role
+      - image
+    properties:
+      firstName:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      phoneNumber:
+        type: string
+      role: 
+        type: string
+      verificationCode: 
+        type: number
+      image:
+        type: object

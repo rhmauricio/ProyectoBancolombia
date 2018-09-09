@@ -1,0 +1,138 @@
+swagger: '2.0'
+info:
+  description: Servicio consumo S3 
+  version: 1.0.0
+  title: Servicio para consumir S3
+  contact:
+    email: mauricio.ramirez1@udea.edu.co
+host: 'localhost:8095'
+basePath: /S3
+paths:
+  /put:
+    put:
+      tags:
+        - adiciona-objeto-api-controller
+      summary: adiciona un objeto a un bucket  
+      description:  adiciona los datos a el bucket de S3 en AWS
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: body
+          required: true
+          schema:
+            $ref: '#/definitions/JsonApiS3Request'
+      responses:
+        '200':
+          description: Inquery step success
+          schema:
+            $ref: '#/definitions/JsonResponseSuccess'
+        '401':
+          description: Unathorized. user has not permissions
+          schema:
+            $ref: '#/definitions/JsonApiBodyResponseErrors'
+  /get:
+    get:
+      tags:
+        - leer-objeto-api-usuario
+      summary: lee un objeto de un bucket s3 
+      description: lee un objeto de un bucket s3 en aws
+      consumes:
+        - application/json
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description: body
+          required: true
+          schema:
+            $ref: '#/definitions/GetS3Request'
+      responses:
+        '200':
+          description: Inquery step success
+          schema:
+            $ref: '#/definitions/S3ObjectResponse'
+        '401':
+          description: Unathorized. user has not permissions
+          schema:
+            $ref: '#/definitions/JsonApiBodyResponseErrors'
+definitions:
+  GetS3Request:
+    type: object
+    required:
+      - header
+      - keyName
+    properties:
+      header:
+        $ref: '#/definitions/Header'
+      keyName:
+        type: string
+  JsonApiS3Request:
+    type: object
+    required:
+      - header
+    properties:
+      header:
+        $ref: '#/definitions/Header'
+  Header:
+    type: object
+    required:
+      - id
+      - type
+    properties:
+      id:
+        type: string
+      type:
+        type: string  
+  JsonResponseSuccess:
+    type: object
+    required:
+      - header
+      - success
+    properties:
+      header:
+        $ref: '#/definitions/Header'
+      success:
+        type: boolean
+  JsonApiBodyResponseErrors:
+    type: object
+    required:
+      - errors
+    properties:
+      errors:
+        type: array
+        items:
+          $ref: '#/definitions/ErrorDetail'
+  ErrorDetail:
+    type: object
+    required:
+      - code
+      - detail
+      - id
+      - source
+      - status
+      - title
+    properties:
+      code:
+        type: string
+      detail:
+        type: string
+      id:
+        type: string
+      source:
+        type: string
+      status:
+        type: string
+      title:
+        type: string
+  S3ObjectResponse:
+    type: object
+    required:
+      - data
+    properties:
+      data:
+        type: object

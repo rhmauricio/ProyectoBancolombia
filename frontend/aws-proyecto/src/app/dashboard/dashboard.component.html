@@ -8,24 +8,27 @@
 </div>
 
 <div class="content">
-  <div class="cards-container">
-    <div class="card col-30">
+  <div class="cards-container" *ngIf="cardsVisibles()">
+    <div class="card col-30" (click)="onLambdaClick()">
       <div class="card-content">
         <img src="../../assets/aws-lambda.png" height="150">
         <span>AWS Lambda</span>
       </div>
     </div>
-    <div class="card col-30">
+    <div class="card col-30" (click)="onS3Click()">
       <div class="card-content">
         <img src="../../assets/aws-s3.png" height="150">
         <span>AWS S3 Bucket</span>
       </div>
     </div>
-    <div class="card col-30">
+    <div class="card col-30" (click)="onDynamoClick()">
       <div class="card-content">
         <img src="../../assets/aws-dynamo.png" height="150">
         <span>AWS DynamoDB</span>
       </div>
     </div>
   </div>
+  <app-lambda-page *ngIf="lambdaPage"></app-lambda-page>
+  <app-dynamo-page *ngIf="dynamoPage"></app-dynamo-page>
+  <app-s3-page *ngIf="s3Page"></app-s3-page>
 </div>

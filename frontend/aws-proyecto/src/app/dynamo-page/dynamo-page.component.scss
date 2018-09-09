@@ -1,0 +1,32 @@
+#users-list {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0;
+
+  li {
+    list-style: none;
+
+    .li-container {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: white;
+      border-radius: 4px;
+      padding: 8px 16px;
+      margin-bottom: 8px;
+
+      .li-btns-container {
+        button {
+          width: fit-content;
+          color: white;
+          text-align: center;
+          font-weight: bold;
+          padding: 0 16px;
+          margin-right: 8px;
+        }
+      }
+    }
+
+
+  }
+}
