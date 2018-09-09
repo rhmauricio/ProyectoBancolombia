@@ -1,3 +1,42 @@
-<p>
-  register works!
-</p>
+<div class="main-container">
+  <div class="overlay"></div>
+  <div class="form-container">
+    <div class="form-title">
+      <span>Registrarse como usuario AWS</span>
+    </div>
+    <form>
+      <label for="firstName">
+        <input [(ngModel)]="userParameters.firstName" type="text" placeholder="Nombre" name="firstName" />
+      </label>
+      <label for="lastName">
+        <input [(ngModel)]="userParameters.lastName" type="text" placeholder="Apellido" name="lastName" />
+      </label>
+      <label for="username">
+        <input [(ngModel)]="userParameters.email" type="email" placeholder="Correo electrónico" name="username" />
+      </label>
+      <label for="password">
+        <input [(ngModel)]="userParameters.password" type="password" placeholder="Contraseña" name="password">
+      </label>
+      <label for="phoneNumber">
+        <input [(ngModel)]="userParameters.phoneNumber" type="tel" placeholder="Teléfono" name="phoneNumber">
+      </label>
+      <select (change)="selectChanged($event)">
+        <option value="lambda">Lambda</option>
+        <option value="s3">S3</option>
+        <option value="dynamo">DynamoDB</option>
+      </select>
+      <label for="verificationCode">
+        <input [(ngModel)]="userParameters.verificationCode" type="number"
+               placeholder="Cod. Verificación" name="verificationCode">
+      </label>
+      <span class="error-msg" *ngIf="hasError">{{ errorMsg }}</span>
+      <button (click)="onSubmit()">Registrarse</button>
+    </form>
+  </div>
+</div>
+<div class="modal-container" *ngIf="openModal">
+  <div class="modal-content">
+    <span>{{ modalTitle }}</span>
+    <a class="form-link" routerLink="/login">Volver al login</a>
+  </div>
+</div>

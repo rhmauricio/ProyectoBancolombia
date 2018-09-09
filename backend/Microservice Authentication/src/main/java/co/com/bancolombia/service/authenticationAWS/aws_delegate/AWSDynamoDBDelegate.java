@@ -10,29 +10,6 @@ public class AWSDynamoDBDelegate {
 
     public static DynamoDBMapper dynamoDBMapper = new DynamoDBMapper(client);
 
-    /*
-    static void listMyTables() {
-        TableCollection<ListTablesResult> tables = dynamoDB.listTables();
-        Iterator<Table> iterator = tables.iterator();
-        System.out.println("Listing table names");
-        while (iterator.hasNext()) {
-            Table table = iterator.next();
-            System.out.println(table.getTableName());
-        }
-    }*/
-
-    /*
-    static void getTableInformation() {
-        System.out.println("Describing " + tableName);
-        TableDescription tableDescription = dynamoDB.getTable(tableName).describe();
-        System.out.format(
-                "Name: %s:\n" + "Status: %s \n" + "Provisioned Throughput (read capacity units/sec): %d \n"
-                        + "Provisioned Throughput (write capacity units/sec): %d \n",
-                tableDescription.getTableName(), tableDescription.getTableStatus(),
-                tableDescription.getProvisionedThroughput().getReadCapacityUnits(),
-                tableDescription.getProvisionedThroughput().getWriteCapacityUnits());
-    }*/
-
     public static <T extends Object> void createRegister(T data) {
         dynamoDBMapper.save(data);
     }

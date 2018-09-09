@@ -2,16 +2,36 @@
   <div class="overlay"></div>
   <div class="form-container">
     <div class="form-title">
-      <span>Bienvenido al demo de AWS</span>
+      <span>{{title}}</span>
     </div>
-    <form>
-      <label for="username">
-        <input type="email" placeholder="e-mail" name="username">
+    <div *ngIf="isLoginActive">
+      <form>
+        <label for="username">
+          <input [(ngModel)]="username" type="email" placeholder="e-mail" name="username" />
+        </label>
+        <label for="password">
+          <input [(ngModel)]="password" type="password" placeholder="password" name="password">
+        </label>
+        <span class="error-msg" *ngIf="hasError">{{ errorMsg }}</span>
+        <button (click)="onSubmit()">Login</button>
+      </form>
+      <a class="form-link" routerLink="/register">Registrarse</a>
+    </div>
+
+    <div *ngIf="!isLoginActive">
+      <label for="verificationCode">
+        <input [(ngModel)]="verificationCode" type="number" name="verificationCode">
       </label>
-      <label for="password">
-        <input type="password" placeholder="password" name="password">
-      </label>
-      <input type="submit" value="Login">
-    </form>
+      <span *ngIf="hasError">{{ errorMsg }}</span>
+      <button (click)="onSendCode()">Enviar código</button>
+      <a class="form-link" (click)="onResendCode()">Reenviar código</a>
+    </div>
+
+  </div>
+</div>
+<div class="modal-container" *ngIf="openModal">
+  <div class="modal-content">
+    <span>{{ modalTitle }}</span>
+    <a routerLink="/login">Volver al login</a>
   </div>
 </div>

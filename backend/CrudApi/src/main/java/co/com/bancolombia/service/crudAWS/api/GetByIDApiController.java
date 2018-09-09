@@ -39,7 +39,7 @@ public class GetByIDApiController implements GetByIDApi {
         this.request = request;
     }
 
-    public ResponseEntity<SingleUserResponseSuccess> getByIDGet(@ApiParam(value = "body" ,required=true )  @Valid @RequestBody JsonApiBodyRequest body) {
+    public ResponseEntity<SingleUserResponseSuccess> getUserByID(@PathVariable("id") String id) {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
             try {

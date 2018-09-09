@@ -37,8 +37,7 @@ public interface VerificationApi {
     )
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Inquery step success", response = JsonResponseSuccess.class),
-            @ApiResponse(code = 401, message = "Not authorized", response = JsonApiBodyResponseErrors.class),
-            @ApiResponse(code = 409, message = "Conflict. Verification code is not valid", response = JsonApiBodyResponseErrors.class)})
+            @ApiResponse(code = 401, message = "Not authorized", response = JsonApiBodyResponseErrors.class)})
     @RequestMapping(value = "/resend-code",
             produces = {"application/json"},
             consumes = {"application/json"},

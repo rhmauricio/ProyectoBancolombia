@@ -36,6 +36,6 @@ public interface GetAllApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.GET)
-    ResponseEntity<UsersResponseSuccess> getAllGet(@ApiParam(value = "body" ,required=true )  @Valid @RequestBody JsonApiBodyRequest body);
+    ResponseEntity<UsersResponseSuccess> getAllGet();
 
 }

@@ -39,7 +39,7 @@ public class GetAllApiController implements GetAllApi {
         this.request = request;
     }
 
-    public ResponseEntity<UsersResponseSuccess> getAllGet(@ApiParam(value = "body" ,required=true )  @Valid @RequestBody JsonApiBodyRequest body) {
+    public ResponseEntity<UsersResponseSuccess> getAllGet() {
         String accept = request.getHeader("Accept");
         if (accept != null && accept.contains("application/json")) {
             try {
