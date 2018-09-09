@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-09-07T19:06:56.409-05:00")
 
@@ -31,9 +32,9 @@ public interface GetByIDApi {
     @ApiResponses(value = {
             @ApiResponse(code = 200, message = "Inquery step success", response = SingleUserResponseSuccess.class),
             @ApiResponse(code = 401, message = "Unathorized. user has not permissions", response = JsonApiBodyResponseErrors.class)})
-    @RequestMapping(value = "/get/{id}",
+    @RequestMapping(value = "/get",
             produces = {"application/json"},
             method = RequestMethod.GET)
-    ResponseEntity<?> getUserByID(@PathVariable("id") String id);
+    ResponseEntity<?> getUserByID(@RequestParam("id") String id);
 
 }

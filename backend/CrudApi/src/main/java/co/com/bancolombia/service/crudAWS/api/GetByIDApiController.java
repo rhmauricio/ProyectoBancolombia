@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.websocket.server.PathParam;
@@ -37,7 +38,7 @@ public class GetByIDApiController implements GetByIDApi {
         this.userParameters = new UserParameters();
     }
 
-    public ResponseEntity<?> getUserByID(@PathVariable("id") String id) {
+    public ResponseEntity<?> getUserByID(@RequestParam("id") String id) {
         try {
             User user = awsDynamoDBDelegate.readRegister(User.class, id);
             userParameters
