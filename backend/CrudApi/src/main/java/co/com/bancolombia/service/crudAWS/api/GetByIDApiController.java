@@ -59,7 +59,6 @@ public class GetByIDApiController implements GetByIDApi {
                 errorDetail.setSource("/login");
                 errorDetail.setStatus(HttpStatus.CONFLICT.toString());
                 errorDetail.setTitle("Datos por id no encontrados");
-
                 errorsResponse.add(errorDetail);
                 responseError.setErrors(errorsResponse);
                 return new ResponseEntity<JsonApiBodyResponseErrors>(responseError, HttpStatus.BAD_REQUEST);

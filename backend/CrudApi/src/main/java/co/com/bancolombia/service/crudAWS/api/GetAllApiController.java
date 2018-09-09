@@ -1,10 +1,7 @@
 package co.com.bancolombia.service.crudAWS.api;
 
 import co.com.bancolombia.service.crudAWS.aws_delegate.AWSDynamoDBDelegate;
-import co.com.bancolombia.service.crudAWS.model.JsonApiBodyResponseErrors;
-import co.com.bancolombia.service.crudAWS.model.User;
-import co.com.bancolombia.service.crudAWS.model.UserParameters;
-import co.com.bancolombia.service.crudAWS.model.UsersResponseSuccess;
+import co.com.bancolombia.service.crudAWS.model.*;
 import com.amazonaws.AmazonServiceException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.Logger;
@@ -54,11 +51,20 @@ public class GetAllApiController implements GetAllApi {
             }
             return new ResponseEntity<>(new UsersResponseSuccess().data(list1), HttpStatus.OK);
         } catch (AmazonServiceException e) {
-            log.error("Couldn't serialize response for content type application/json", e);
-            return new ResponseEntity<UsersResponseSuccess>(HttpStatus.INTERNAL_SERVER_ERROR);
-        }
+            log.error("Error trayendo todos los usuarios");
+            JsonApiBodyResponseErrors responseError = new JsonApiBodyResponseErrors();
+            List<ErrorDetail> errorsResponse =  new ArrayList<ErrorDetail>();
+            ErrorDetail errorDetail = new ErrorDetail();
 
-        //return new ResponseEntity<JsonApiBodyResponseErrors>(HttpStatus.NOT_IMPLEMENTED);
-    }
+            errorDetail.setCode("0001");
+            errorDetail.setDetail("error interno AmazonServiceException");
+            errorDetail.setSource("/S3");
+            errorDetail.setStatus(HttpStatus.CONFLICT.toString());
+            errorDetail.setTitle("error trayendo los usuarios");
+            errorsResponse.add(errorDetail);
+            responseError.setErrors(errorsResponse);
+            return new ResponseEntity<JsonApiBodyResponseErrors>(responseError, HttpStatus.CONFLICT);
+        }
+       }
 
 }

@@ -16,6 +16,8 @@ import javax.management.DynamicMBean;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-09-07T19:06:56.409-05:00")
 
@@ -50,8 +52,19 @@ public class UpdateApiController implements UpdateApi {
                 awsDynamoDBDelegate.updateRegister(User.class, body.getUserData().getEmail(), user);
                 return new ResponseEntity<>(new JsonResponseSuccess().success(true),HttpStatus.OK);
             } catch (AmazonServiceException e) {
-                log.error("Couldn't serialize response for content type application/json", e);
-                return new ResponseEntity<JsonResponseSuccess>(HttpStatus.INTERNAL_SERVER_ERROR);
+                log.error("Error actualizando el usuario en DynamoDB aws");
+                JsonApiBodyResponseErrors responseError = new JsonApiBodyResponseErrors();
+                List<ErrorDetail> errorsResponse =  new ArrayList<ErrorDetail>();
+                ErrorDetail errorDetail = new ErrorDetail();
+                errorDetail.setCode("0001");
+                errorDetail.setDetail("error interno AmazonServiceException");
+                errorDetail.setId(body.getHeader().getId());
+                errorDetail.setSource("/S3");
+                errorDetail.setStatus(HttpStatus.CONFLICT.toString());
+                errorDetail.setTitle("error actualizando informacion de usuario ");
+                errorsResponse.add(errorDetail);
+                responseError.setErrors(errorsResponse);
+                return new ResponseEntity<JsonApiBodyResponseErrors>(responseError, HttpStatus.CONFLICT);
             }
         }
 
