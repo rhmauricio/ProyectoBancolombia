@@ -2,7 +2,6 @@ package co.com.bancolombia.service.crudAWS.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
@@ -20,23 +19,23 @@ public class SwaggerDocumentationConfig {
 
     ApiInfo apiInfo() {
         return new ApiInfoBuilder()
-            .title("Servicio CRUD DynamoDB")
-            .description("Servicio CRUD DynamoDB")
-            .license("")
-            .licenseUrl("http://unlicense.org")
-            .termsOfServiceUrl("")
-            .version("1.0.0")
-            .contact(new Contact("","", "mauricio.ramirez1@udea.edu.co"))
-            .build();
+                .title("Servicio CRUD DynamoDB")
+                .description("Servicio CRUD DynamoDB")
+                .license("")
+                .licenseUrl("http://unlicense.org")
+                .termsOfServiceUrl("")
+                .version("1.0.0")
+                .contact(new Contact("", "", "mauricio.ramirez1@udea.edu.co"))
+                .build();
     }
 
     @Bean
-    public Docket customImplementation(){
+    public Docket customImplementation() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .select()
-                    .apis(RequestHandlerSelectors.basePackage("co.com.bancolombia.service.crudAWS.api"))
-                    .paths(PathSelectors.any())
-                    .build()
+                .apis(RequestHandlerSelectors.basePackage("co.com.bancolombia.service.crudAWS.api"))
+                .paths(PathSelectors.any())
+                .build()
                 .apiInfo(apiInfo());
     }
 

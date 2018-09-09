@@ -35,6 +35,6 @@ public interface GetByIDApi {
             produces = {"application/json"},
             consumes = {"application/json"},
             method = RequestMethod.GET)
-    ResponseEntity<SingleUserResponseSuccess> getUserByID(@PathVariable("id") String id);
+    ResponseEntity<?> getUserByID(@PathVariable("id") String id);
 
 }

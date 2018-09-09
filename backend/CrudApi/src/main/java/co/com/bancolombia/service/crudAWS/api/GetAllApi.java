@@ -5,37 +5,29 @@
  */
 package co.com.bancolombia.service.crudAWS.api;
 
-import co.com.bancolombia.service.crudAWS.model.JsonApiBodyRequest;
 import co.com.bancolombia.service.crudAWS.model.JsonApiBodyResponseErrors;
 import co.com.bancolombia.service.crudAWS.model.UsersResponseSuccess;
-import io.swagger.annotations.*;
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
+import io.swagger.annotations.ApiResponse;
+import io.swagger.annotations.ApiResponses;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.multipart.MultipartFile;
 
-import javax.validation.Valid;
-import javax.validation.constraints.*;
-import java.util.List;
 @javax.annotation.Generated(value = "io.swagger.codegen.languages.SpringCodegen", date = "2018-09-07T19:06:56.409-05:00")
 
 @Api(value = "getAll", description = "the getAll API")
 public interface GetAllApi {
 
-    @ApiOperation(value = "Trae la informacion de usuarios registrados", nickname = "getAllGet", notes = "Trae la informacion de usuarios registrados", response = UsersResponseSuccess.class, tags={ "lista-usuarios-api-controller", })
-    @ApiResponses(value = { 
-        @ApiResponse(code = 200, message = "Inquery step success", response = UsersResponseSuccess.class),
-        @ApiResponse(code = 401, message = "Unathorized. user has not permissions", response = JsonApiBodyResponseErrors.class) })
+    @ApiOperation(value = "Trae la informacion de usuarios registrados", nickname = "getAllGet", notes = "Trae la informacion de usuarios registrados", response = UsersResponseSuccess.class, tags = {"lista-usuarios-api-controller",})
+    @ApiResponses(value = {
+            @ApiResponse(code = 200, message = "Inquery step success", response = UsersResponseSuccess.class),
+            @ApiResponse(code = 401, message = "Unathorized. user has not permissions", response = JsonApiBodyResponseErrors.class)})
     @RequestMapping(value = "/getAll",
-        produces = { "application/json" }, 
-        consumes = { "application/json" },
-        method = RequestMethod.GET)
-    ResponseEntity<UsersResponseSuccess> getAllGet();
+            produces = {"application/json"},
+            consumes = {"application/json"},
+            method = RequestMethod.GET)
+    ResponseEntity<?> getAllGet();
 
 }
