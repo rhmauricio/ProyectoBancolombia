@@ -31,7 +31,7 @@ public class S3ObjectResponse   {
   @ApiModelProperty(required = true, value = "")
   @NotNull
 
-
+  @Valid
   public String getData() {
     return data;
   }

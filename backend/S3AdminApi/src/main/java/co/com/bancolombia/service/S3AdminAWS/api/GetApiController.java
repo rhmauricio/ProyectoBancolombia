@@ -49,7 +49,7 @@ public class GetApiController implements GetApi {
         if (accept != null && accept.contains("application/json")) {
             try {
                 String image = awss3Delegate.s3Get(body.getKeyName());
-                return new ResponseEntity<>(new S3ObjectResponse().data(image), HttpStatus.OK);
+                return new ResponseEntity<S3ObjectResponse>(new S3ObjectResponse().data(image), HttpStatus.OK);
             } catch (IOException e) {
                 log.error("Couldn't serialize response for content type application/json", e);
                 JsonApiBodyResponseErrors responseError = new JsonApiBodyResponseErrors();
@@ -85,7 +85,7 @@ public class GetApiController implements GetApi {
             }
         }
 
-        return new ResponseEntity<S3ObjectResponse>(HttpStatus.NOT_IMPLEMENTED);
+        return new ResponseEntity<JsonApiBodyResponseErrors>(HttpStatus.NOT_IMPLEMENTED);
     }
 
 }

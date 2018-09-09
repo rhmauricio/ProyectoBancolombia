@@ -28,10 +28,8 @@ public class JsonApiS3Request {
     @JsonProperty("imagedata")
     private String imagedata = null;
 
-    public JsonApiS3Request header(Header header, String Keyname) {
+    public JsonApiS3Request header(Header header) {
         this.header = header;
-        this.keyname = keyname;
-        this.imagedata = imagedata;
         return this;
     }
 
