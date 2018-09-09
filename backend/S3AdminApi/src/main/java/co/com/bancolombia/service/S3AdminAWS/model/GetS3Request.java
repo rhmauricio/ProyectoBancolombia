@@ -57,7 +57,7 @@ public class GetS3Request   {
   @ApiModelProperty(required = true, value = "")
   @NotNull
 
-
+  @Valid
   public String getKeyName() {
     return keyName;
   }

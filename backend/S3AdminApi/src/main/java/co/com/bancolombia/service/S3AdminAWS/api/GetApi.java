@@ -35,7 +35,7 @@ public interface GetApi {
     @RequestMapping(value = "/get",
         produces = { "application/json" }, 
         consumes = { "application/json" },
-        method = RequestMethod.GET)
-    ResponseEntity<S3ObjectResponse> getGet(@ApiParam(value = "body" ,required=true )  @Valid @RequestBody GetS3Request body);
+        method = RequestMethod.POST)
+    ResponseEntity<?> getGet(@ApiParam(value = "body" ,required=true )  @Valid @RequestBody GetS3Request body);
 
 }

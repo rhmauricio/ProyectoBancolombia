@@ -17,9 +17,9 @@ import javax.validation.constraints.*;
 
 public class S3ObjectResponse   {
   @JsonProperty("data")
-  private Object data = null;
+  private String data = null;
 
-  public S3ObjectResponse data(Object data) {
+  public S3ObjectResponse data(String data) {
     this.data = data;
     return this;
   }
@@ -31,12 +31,12 @@ public class S3ObjectResponse   {
   @ApiModelProperty(required = true, value = "")
   @NotNull
 
-
-  public Object getData() {
+  @Valid
+  public String getData() {
     return data;
   }
 
-  public void setData(Object data) {
+  public void setData(String data) {
     this.data = data;
   }
 

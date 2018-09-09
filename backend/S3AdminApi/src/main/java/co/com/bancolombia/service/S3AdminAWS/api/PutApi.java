@@ -36,6 +36,6 @@ public interface PutApi {
         produces = { "application/json" }, 
         consumes = { "application/json" },
         method = RequestMethod.PUT)
-    ResponseEntity<JsonResponseSuccess> putPut(@ApiParam(value = "body" ,required=true )  @Valid @RequestBody JsonApiS3Request body);
+    ResponseEntity<?> putPut(@ApiParam(value = "body" ,required=true )  @Valid @RequestBody JsonApiS3Request body);
 
 }

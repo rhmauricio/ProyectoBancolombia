@@ -43,7 +43,6 @@ dependencies {
 	compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version:'1.5.13.RELEASE'
 	compile group: 'io.springfox', name: 'springfox-swagger2', version:'2.7.0'
 	compile group: 'io.springfox', name: 'springfox-swagger-ui', version:'2.7.0'
-
 	compile 'com.amazonaws:aws-java-sdk-s3'
 	compile 'com.amazonaws:aws-java-sdk-dynamodb'
 	compile 'com.amazonaws:aws-java-sdk-cognito'
