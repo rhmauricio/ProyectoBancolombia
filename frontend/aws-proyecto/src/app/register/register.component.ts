@@ -1,6 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {UserParameters} from '../model/user-parameters.model';
 import {AuthenticationService} from '../authentication.service';
+import {ShareDataService} from '../share-data.service';
 
 @Component({
   selector: 'app-register',
@@ -17,8 +18,10 @@ export class RegisterComponent implements OnInit {
   openModal: boolean;
 
   constructor(
-    private authentication: AuthenticationService
-  ) { }
+    private authentication: AuthenticationService,
+    private share: ShareDataService
+  ) {
+  }
 
   ngOnInit() {
     this.userParameters = new UserParameters();
@@ -32,9 +35,11 @@ export class RegisterComponent implements OnInit {
   }
 
   onSubmit() {
+    this.share.loaderOpen = true;
     this.authentication.registerRequest(this.userParameters)
       .subscribe(
         success => {
+          this.share.loaderOpen = false;
           console.log(success);
           // Open modal
           this.openModal = true;
@@ -42,6 +47,7 @@ export class RegisterComponent implements OnInit {
         },
 
         error => {
+          this.share.loaderOpen = false;
           console.log(error.error.errors[0]);
           const _error = error.error.errors[0];
 
@@ -51,11 +57,18 @@ export class RegisterComponent implements OnInit {
             /* Error: usuario ya existe */
             if (_error.code === '0001') {
               this.errorMsg = 'El email que intenta registrar ya está en uso';
+              return;
             }
 
             /* Error: password débil */
             if (_error.code === '0002') {
               this.errorMsg = 'El password es débil';
+              return;
+            }
+
+            /* Error: código de rol */
+            if (_error.code === '0003') {
+              this.errorMsg = _error.detail;
             }
           }
         }
@@ -65,7 +78,7 @@ export class RegisterComponent implements OnInit {
   onFileChange(event) {
     let reader = new FileReader();
 
-    if(event.target.files && event.target.files.length > 0) {
+    if (event.target.files && event.target.files.length > 0) {
       let file = event.target.files[0];
       reader.readAsDataURL(file);
       reader.onload = result => {

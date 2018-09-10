@@ -45,7 +45,9 @@ public class GetByIDApiController implements GetByIDApi {
                     .email(user.getUserName())
                     .firstName(user.getFirstName())
                     .lastName(user.getLastName())
-                    .phoneNumber(user.getPhoneNumber());
+                    .phoneNumber(user.getPhoneNumber())
+                    .role(user.getRole());
+
             return new ResponseEntity<>(new SingleUserResponseSuccess().data(userParameters), HttpStatus.OK);
         } catch (AmazonServiceException e) {
             JsonApiBodyResponseErrors responseError = new JsonApiBodyResponseErrors();

@@ -4,12 +4,16 @@
     <div class="li-container">
       <span>{{ user.email }}</span>
       <div class="li-btns-container">
-        <button style="background: orange" (click)="editUser(user)">EDIT</button>
-        <button style="background: #00448D" (click)="detailUser(user)">DETAILS</button>
+        <button style="background: orange" (click)="editUser(user, i)">EDIT</button>
+        <button style="background: #00448D" (click)="detailUser(user, i)">DETAILS</button>
       </div>
     </div>
-    <div class="details" *ngIf="false">
-      <span>Detalle de {{ user }}</span>
+    <div class="details" *ngIf="details[i]">
+      <span>Username: {{ user.email }}</span>
+      <span>Nombre: {{ user.firstName }}</span>
+      <span>Apellido: {{ user.lastName }}</span>
+      <span>Teléfono: {{ user.phoneNumber }}</span>
+      <span>Rol: {{ user.role }}</span>
     </div>
   </li>
 </ul>

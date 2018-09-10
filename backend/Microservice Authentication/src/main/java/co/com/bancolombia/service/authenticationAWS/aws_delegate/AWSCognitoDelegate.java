@@ -108,6 +108,12 @@ public class AWSCognitoDelegate {
     public void signUp(UserParameters userParameters)
             throws UsernameExistsException, TooManyRequestsException, InvalidPasswordException {
 
+        if (!userParameters.getRole().equals("lambda")) {
+            CLIENT_POOL_ID = properties.getProperty("dynamo-pool.client-id");
+        } else {
+            CLIENT_POOL_ID = properties.getProperty("lambda-pool.client-id");
+        }
+
         List<AttributeType> userAttributes = new ArrayList<>();
         AttributeType userAttribute;
 
@@ -173,10 +179,18 @@ public class AWSCognitoDelegate {
      * @param password
      * @throws AWSCognitoIdentityProviderException
      */
-    public AuthenticationResultType authenticateUser(String username, String password)
+    public AuthenticationResultType authenticateUser(String username, String password, String role)
             throws AWSCognitoIdentityProviderException  {
 
         initSRPParameters();
+
+        if (!role.equals("lambda")) {
+            CLIENT_POOL_ID = properties.getProperty("dynamo-pool.client-id");
+            POOL_ID = properties.getProperty("dynamo-pool.user-id");
+        } else {
+            CLIENT_POOL_ID = properties.getProperty("lambda-pool.client-id");
+            POOL_ID = properties.getProperty("lamda-pool.user-id");
+        }
 
         RespondToAuthChallengeResult loginResult;
         InitiateAuthRequest authRequest = new InitiateAuthRequest();

@@ -37,6 +37,7 @@ export class LoginComponent implements OnInit {
   }
 
   onSubmit() {
+    this.share.loaderOpen = true;
     this.authentication.loginRequest(this.username, this.password)
       .subscribe(
         result => {
@@ -47,6 +48,7 @@ export class LoginComponent implements OnInit {
           this.router.navigateByUrl('/dashboard');
         },
         error => {
+          this.share.loaderOpen = false;
           console.log(error.error.errors[0]);
           const _error = error.error.errors[0];
 
@@ -62,6 +64,9 @@ export class LoginComponent implements OnInit {
             this.isLoginActive = false;
             this.title = 'Verificar el código de registro';
           }
+        },
+        () => {
+          this.share.loaderOpen = false;
         }
       );
 
@@ -111,5 +116,10 @@ export class LoginComponent implements OnInit {
           console.log(error.error.errors[0]);
         }
       );
+  }
+
+  backToLogin() {
+    this.isLoginActive = true;
+    this.openModal = false;
   }
 }

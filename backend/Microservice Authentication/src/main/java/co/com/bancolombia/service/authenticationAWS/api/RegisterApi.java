@@ -28,6 +28,10 @@ import java.util.List;
 @Api(value = "register", description = "the register API")
 public interface RegisterApi {
 
+    int LAMBDA_CODE = 1001;
+    int DYNAMO_CODE = 1002;
+    int S3_CODE = 1003;
+
     @ApiOperation(value = "Petición de registro por medio de AWS", nickname = "registerPost", notes = "Microservicio que consume Dynamo y Cognito con apache camel", response = AuthenticationRegisterResponse.class, tags={ "authentication-service-api-controller", })
     @ApiResponses(value = { 
         @ApiResponse(code = 200, message = "Inquery step success", response = AuthenticationRegisterResponse.class),

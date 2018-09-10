@@ -48,13 +48,17 @@ public class LoginApiController implements LoginApi {
         String accept = request.getHeader("Content-Type");
         if (accept != null && accept.contains("application/json")) {
             try {
-                AuthenticationResultType loginResult;
+                AuthenticationResultType loginResult = null;
                 Credentials userCredentials = body.getCredentials();
+                User userData = AWSDynamoDBDelegate.readRegister(User.class, userCredentials.getUser());
 
-                loginResult = cognitoDelegate.authenticateUser(userCredentials.getUser(), userCredentials.getPassword());
+                if (userData != null) {
+                    loginResult = cognitoDelegate.authenticateUser(userCredentials.getUser(), userCredentials.getPassword(), userData.getRole());
+                }
+
 
                 if (loginResult != null) {
-                    User userData = AWSDynamoDBDelegate.readRegister(User.class, userCredentials.getUser());
+
                     userData.setAccessToken(loginResult.getAccessToken());
                     userData.setRefreshToken(loginResult.getRefreshToken());
 

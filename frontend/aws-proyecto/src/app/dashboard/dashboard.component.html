@@ -3,11 +3,12 @@
     <span>Bienvenido {{ username }}</span>
   </div>
   <div class="log-out">
-    <button>Log out</button>
+    <button routerLink="/login">Log out</button>
   </div>
 </div>
 
 <div class="content">
+  <a (click)="showDashboard()" *ngIf="!cardsVisibles()">Dashboard</a>
   <div class="cards-container" *ngIf="cardsVisibles()">
     <div class="card col-30" (click)="onLambdaClick()">
       <div class="card-content">

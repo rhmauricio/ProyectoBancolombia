@@ -42,6 +42,27 @@ public class RegisterApiController implements RegisterApi {
     public ResponseEntity<?> registerPost(@ApiParam(value = "body" ,required=true )  @Valid @RequestBody RegisterRequest body) {
         String accept = request.getHeader("Content-Type");
         if (accept != null && accept.contains("application/json")) {
+
+            // Verifica que el código coincida con el rol antes de continuar
+            if (!verifyRoleCode(body.getUserParameters().getRole(), body.getUserParameters().getVerificationCode().intValue())) {
+                log.error("Error de parámetros: el código no coincide con el rol");
+
+                JsonApiBodyResponseErrors responseError = new JsonApiBodyResponseErrors();
+                List<ErrorDetail> errorsResponse =  new ArrayList<ErrorDetail>();
+                ErrorDetail errorDetail = new ErrorDetail();
+
+                errorDetail.setCode("0003");
+                errorDetail.setDetail("El código proporcionado no corresponde al rol seleccionado");
+                errorDetail.setId(body.getHeader().getId());
+                errorDetail.setSource("/register");
+                errorDetail.setStatus(HttpStatus.CONFLICT.toString());
+                errorDetail.setTitle("Error de código de rol");
+
+                errorsResponse.add(errorDetail);
+                responseError.setErrors(errorsResponse);
+                return new ResponseEntity<JsonApiBodyResponseErrors>(responseError, HttpStatus.CONFLICT);
+            }
+
             try {
                 AuthenticationRegisterResponse response = new AuthenticationRegisterResponse();
                 JsonResponseSuccess sucessResponse = new JsonResponseSuccess();
@@ -58,6 +79,7 @@ public class RegisterApiController implements RegisterApi {
                 user.setFirstName(registerParameters.getFirstName());
                 user.setLastName(registerParameters.getLastName());
                 user.setPhoneNumber(registerParameters.getPhoneNumber());
+                user.setRole(registerParameters.getRole());
 
                 AWSDynamoDBDelegate.createRegister(user);
 
@@ -102,6 +124,19 @@ public class RegisterApiController implements RegisterApi {
         }
 
         return new ResponseEntity<AuthenticationRegisterResponse>(HttpStatus.NOT_IMPLEMENTED);
+    }
+
+    private boolean verifyRoleCode(String role, int code) {
+        switch (role) {
+            case "lambda":
+                return code == RegisterApi.LAMBDA_CODE;
+            case "dynamo":
+                return code == RegisterApi.DYNAMO_CODE;
+            case "s3":
+                return code == RegisterApi.S3_CODE;
+            default:
+                return false;
+        }
     }
 
 }

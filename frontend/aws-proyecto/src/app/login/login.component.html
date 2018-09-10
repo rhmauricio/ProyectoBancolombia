@@ -31,7 +31,7 @@
 </div>
 <div class="modal-container" *ngIf="openModal">
   <div class="modal-content">
-    <span>{{ modalTitle }}</span>
-    <a routerLink="/login">Volver al login</a>
+    <span style="display: block">{{ modalTitle }}</span>
+    <a class="form-link" (click)="backToLogin()">Volver al login</a>
   </div>
 </div>

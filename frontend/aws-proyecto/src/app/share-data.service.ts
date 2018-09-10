@@ -6,6 +6,8 @@ import {BehaviorSubject} from 'rxjs';
 })
 export class ShareDataService {
 
+  loaderOpen: boolean;
+
   private nameSource = new BehaviorSubject('');
 
   private tokenSource = new BehaviorSubject('');

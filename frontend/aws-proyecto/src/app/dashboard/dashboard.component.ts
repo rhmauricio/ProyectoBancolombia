@@ -54,4 +54,10 @@ export class DashboardComponent implements OnInit {
       !this.s3Page;
   }
 
+  showDashboard() {
+    this.lambdaPage = false;
+    this.dynamoPage = false;
+    this.s3Page = false;
+  }
+
 }

@@ -43,10 +43,12 @@ public class GetAllApiController implements GetAllApi {
             List<UserParameters> list1= new ArrayList<>();
             for(User user : list ){
                 UserParameters userParameters=new UserParameters();
-                userParameters.phoneNumber(user.getPhoneNumber())
+                userParameters
+                        .phoneNumber(user.getPhoneNumber())
                         .lastName(user.getLastName())
                         .firstName(user.getFirstName())
-                        .email(user.getUserName());
+                        .email(user.getUserName())
+                        .role(user.getRole());
                 list1.add(userParameters);
             }
             return new ResponseEntity<>(new UsersResponseSuccess().data(list1), HttpStatus.OK);
