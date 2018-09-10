@@ -81,8 +81,9 @@ export class RegisterComponent implements OnInit {
     if (event.target.files && event.target.files.length > 0) {
       let file = event.target.files[0];
       reader.readAsDataURL(file);
-      reader.onload = result => {
-        console.log(result);
+      reader.onload = () => {
+        // console.log(reader.result.split(',')[1]);
+        this.userParameters.imgString = reader.result.split(',')[1];
       };
     }
   }

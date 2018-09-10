@@ -38,6 +38,9 @@ public class UserParameters   {
   @JsonProperty("verificationCode")
   private BigDecimal verificationCode = null;
 
+  @JsonProperty("imgString")
+  private String imgString = null;
+
   public UserParameters firstName(String firstName) {
     this.firstName = firstName;
     return this;
@@ -186,6 +189,25 @@ public class UserParameters   {
     this.verificationCode = verificationCode;
   }
 
+
+  public UserParameters imgString(String imgString) {
+    this.imgString = imgString;
+    return this;
+  }
+
+  /**
+   * Get imgString
+   * @return
+   */
+  @ApiModelProperty(required = false, value = "")
+  @Valid
+  public String getImgString() {
+    return imgString;
+  }
+
+  public void setImgString(String imgString) {
+    this.imgString = imgString;
+  }
 
   @Override
   public boolean equals(java.lang.Object o) {

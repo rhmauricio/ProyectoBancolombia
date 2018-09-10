@@ -20,6 +20,10 @@
       <label for="phoneNumber">
         <input [(ngModel)]="userParameters.phoneNumber" type="tel" placeholder="Teléfono" name="phoneNumber">
       </label>
+      <label for="avatar">
+        Foto de avatar:
+        <input type="file" (change)="onFileChange($event)" accept="image/png, image/jpeg" name="avatar"/>
+      </label>
       <select (change)="selectChanged($event)">
         <option value="lambda">Lambda</option>
         <option value="s3">S3</option>

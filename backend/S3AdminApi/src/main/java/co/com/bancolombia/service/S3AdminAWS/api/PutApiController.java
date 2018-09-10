@@ -50,7 +50,7 @@ public class PutApiController implements PutApi {
     }
 
     public ResponseEntity<?> putPut(@ApiParam(value = "body", required = true) @Valid @RequestBody JsonApiS3Request body){
-        String accept = request.getHeader("Accept");
+        String accept = "application/json";
         if (accept != null && accept.contains("application/json")) {
             try {
                 awss3Delegate.s3Save(body.getKeyname(),body.getimagedata());
